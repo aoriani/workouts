@@ -39,10 +39,23 @@ void selection_sort(T array[],size_t size){
 }
 
 
+template<typename T>
+void bubble_sort(T array[], size_t size){
+	for (int i = 0; i < size-1; i++) {
+		for (int j = 0; j < size - 1; j++) {
+			if(array[j+1] < array[j]){
+				T temp = array[j+1];
+				array[j+1] = array[j];
+				array[j] = temp;
+			}
+		}
+	}
+}
+
 int main(){
 	int array[] = {6,5,4,3,2,1};
 	size_t size= sizeof(array)/sizeof(int);
-	selection_sort(array,size);
+	bubble_sort(array,size);
 	
 	for(int i=0; i<size;i++){
 		cout << array[i]<<endl;

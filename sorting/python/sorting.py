@@ -25,6 +25,18 @@ def selection_sort(array):
 				array[i] = array[minIndex]
 				array[minIndex] = temp
 
+
+def bubble_sort(array):
+	size = len(array)
+	if size > 1:
+		for i in range(0,size-1):
+			for j in range(0,size-1):
+				if array[j+1]<array[j]:
+					temp = array[j+1]
+					array[j+1]=array[j]
+					array[j]=temp
+
+
 if __name__ == "__main__":
 	array = [ 6,5,4,3,2,1]
 	selection_sort(array)
