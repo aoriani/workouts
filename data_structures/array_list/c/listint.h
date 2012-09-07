@@ -1,38 +1,48 @@
 #ifndef LIST_H_
 #define LIST_H_
 
-typedef bool int;
+typedef int bool;
 #define TRUE 1
 #define FALSE 0
 
 
 //The ADT representing the list
-typedef listint_t{
+typedef struct listint_t{
 	unsigned int used, capacity;
 	int* array;
 }listint_t;
 
 //Initialize the list
 void list_init(listint_t* list);
+
 //Insert value on front of the list
 void list_insert_front(listint_t* list, int value);
+
 //Insert value in the back of the list
 void list_insert_back(listint_t* list, int value);
+
 //Insert value in the position especified by pos
 void list_insert_at(listint_t* list, unsigned int pos, int value);
+
 //Returns the current size of the list
 inline unsigned int list_size(const listint_t* list);
+
 //Retuns the current capacity of the list
 inline unsigned int list_capacity(const listint_t* list);
+
 //Verify if an element it is in the list
 bool list_contains(const listint_t* list,int value);
+
 //Return the element at the specified position
 inline int list_element_at(const listint_t* list, unsigned int pos);
+
 //Remove an especified element from the list
 //Return true if removed, false otherwise
 bool list_remove(listint_t* list, int value);
+
 //Removes the  element from the front return it
 int list_pop_front(listint_t* list);
+
 //Removes the  element from the back return it
 int list_pop_back(listint_t* list);
 

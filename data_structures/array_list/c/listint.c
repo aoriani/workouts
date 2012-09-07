@@ -1,21 +1,24 @@
 #include "listint.h"
-#include <stdlih.h>
+#include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #define INITIAL_CAPACITY 4
 
 #define MAX(x,y) ((x)>(y))?(x):(y)
 
+//==========================================================================
 void list_init(listint_t* list){
 	assert(list != NULL);
 	list->capacity = 4;
 	list->used = 0;
-	list->array = (int*) malloc(list->capacity * size(int));
+	list->array = (int*) malloc(list->capacity * sizeof(int));
 	assert(list->array != NULL);
 	
 }
 
-static list_resize_array(listint_t* list, int size){
+//==========================================================================
+static void list_resize_array(listint_t* list, int size){
 	//Ensure we have enough room to copy the array
 	assert(size >= list->used);
 	
@@ -28,6 +31,7 @@ static list_resize_array(listint_t* list, int size){
 	list->array = newarray;
 }
 
+//==========================================================================
 void list_insert_front(listint_t* list, int value){
 	//Check if we need to resize
 	if((list->used + 1) > list->capacity){
@@ -39,7 +43,9 @@ void list_insert_front(listint_t* list, int value){
 	list->array[0] = value;
 	list->used++;
 }
+
 						  						  
+//==========================================================================
 void list_insert_back(listint_t* list, int value){
 	//Check if we need to resize
 	if((list->used + 1) > list->capacity){
@@ -50,6 +56,8 @@ void list_insert_back(listint_t* list, int value){
 	list->used++;
 }
 
+#if 0
+//==========================================================================
 //Rounds up to the next power of 2. If value is a power of 2, it returns value
 static unsigned int roundup2pw(unsigned int value){
 	unsigned int i = 0u;
@@ -61,6 +69,7 @@ static unsigned int roundup2pw(unsigned int value){
 	return 1u<<i;
 }
 
+//==========================================================================
 void list_insert_at(listint_t* list, unsigned int pos, int value);{
 	
 	unsigned int new_used = MAX(list->used+1, pos+1);
@@ -75,14 +84,17 @@ void list_insert_at(listint_t* list, unsigned int pos, int value);{
 }
 
 
+//==========================================================================
 inline unsigned int list_size(const listint_t* list){
 	return list->used;
 }
 
+//==========================================================================
 inline unsigned int list_capacity(const listint_t* list){
 	return list->capacity
 }
 
+//==========================================================================
 bool list_contains(const listint_t* list,int value){
 	for (unsigned int i = 0u; i < list->used; i++) {
 		if (list->array[i] == value){
@@ -92,11 +104,13 @@ bool list_contains(const listint_t* list,int value){
 	return FALSE;
 }
 
+//==========================================================================
 inline int list_element_at(const listint_t* list, unsigned int pos){
 	assert(pos < list->used);
 	return list->array[pos];
 }
 
+//==========================================================================
 bool list_remove(listint_t* list, int value){
 	for (unsigned int i = 0u; i < list->used; i++) {
 		if (list->array[i] == value){
@@ -109,6 +123,7 @@ bool list_remove(listint_t* list, int value){
 	return FALSE;	
 }
 
+//==========================================================================
 int list_pop_front(listint_t* list){
 	assert(list->used > 0);
 	int result = list->array[0];
@@ -125,6 +140,7 @@ int list_pop_front(listint_t* list){
 	return result;
 }
 
+//==========================================================================
 int list_pop_back(listint_t* list){
 	assert(list->used > 0);
 	int result = list->array[--list->used];
@@ -135,4 +151,6 @@ int list_pop_back(listint_t* list){
 	}
 	return result;
 }
+//==========================================================================
 
+#endif  //if 0
