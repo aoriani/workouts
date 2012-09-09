@@ -13,6 +13,7 @@ void list_init(listint_t* list){
 	list->capacity = 4;
 	list->used = 0;
 	list->array = (int*) malloc(list->capacity * sizeof(int));
+	memset(list->array,0,list->capacity * sizeof(int));
 	assert(list->array != NULL);
 	
 }
@@ -22,9 +23,10 @@ static void list_resize_array(listint_t* list, int size){
 	//Ensure we have enough room to copy the array
 	assert(size >= list->used);
 	
-	int* newarray = malloc(size * sizeof(int));
+	int* newarray = (int*) malloc(size * sizeof(int));
+	memset(newarray,0,size * sizeof(int));
 	assert(newarray != NULL);
-	memcpy(newarray,list->array, size * sizeof (int));
+	memcpy(newarray,list->array, list->used * sizeof (int));
 	
 	list->capacity = size;
 	free(list->array);
@@ -43,7 +45,6 @@ void list_insert_front(listint_t* list, int value){
 	list->array[0] = value;
 	list->used++;
 }
-
 						  						  
 //==========================================================================
 void list_insert_back(listint_t* list, int value){
@@ -56,7 +57,6 @@ void list_insert_back(listint_t* list, int value){
 	list->used++;
 }
 
-#if 0
 //==========================================================================
 //Rounds up to the next power of 2. If value is a power of 2, it returns value
 static unsigned int roundup2pw(unsigned int value){
@@ -70,28 +70,23 @@ static unsigned int roundup2pw(unsigned int value){
 }
 
 //==========================================================================
-void list_insert_at(listint_t* list, unsigned int pos, int value);{
+void list_insert_at(listint_t* list, unsigned int pos, int value){
 	
 	unsigned int new_used = MAX(list->used+1, pos+1);
 
 	//Check if we need to resize
 	if((new_used) > list->capacity){
-		list_resize_array(list, (2 * list->capacity));
+		list_resize_array(list, roundup2pw(new_used));
 	}
 	
 	//Open space in the array
-	memmove((list->array)+ pos + 1);
-}
-
-
-//==========================================================================
-inline unsigned int list_size(const listint_t* list){
-	return list->used;
-}
-
-//==========================================================================
-inline unsigned int list_capacity(const listint_t* list){
-	return list->capacity
+	if (pos < list->used){
+	    memmove((list->array + pos + 1),(list->array + pos),
+	                                        (list->used - pos + 1));
+	}
+    
+    list->array[pos] = value;
+    list->used = new_used;
 }
 
 //==========================================================================
@@ -105,11 +100,13 @@ bool list_contains(const listint_t* list,int value){
 }
 
 //==========================================================================
-inline int list_element_at(const listint_t* list, unsigned int pos){
-	assert(pos < list->used);
-	return list->array[pos];
+void list_finalize(listint_t* list){
+        free(list->array);
+        list->array = NULL;
+        list->capacity = list->used = 0;
 }
 
+#if 0
 //==========================================================================
 bool list_remove(listint_t* list, int value){
 	for (unsigned int i = 0u; i < list->used; i++) {
@@ -139,6 +136,7 @@ int list_pop_front(listint_t* list){
 	
 	return result;
 }
+#endif  //if 0
 
 //==========================================================================
 int list_pop_back(listint_t* list){
@@ -146,11 +144,13 @@ int list_pop_back(listint_t* list){
 	int result = list->array[--list->used];
 	
 	//Verify need for downsize
-	if (list->used < (list->capacity/4) {
-		list_resize_array(list->array,list->capacity/2);
+	if (list->used < (list->capacity/4)) {
+		list_resize_array(list,list->capacity/2);
 	}
 	return result;
 }
 //==========================================================================
 
-#endif  //if 0
+
+
+
