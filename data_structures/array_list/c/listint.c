@@ -100,6 +100,13 @@ bool list_contains(const listint_t* list,int value){
 }
 
 //==========================================================================
+static inline void list_downsize_ifneed(listint_t* list){
+	if ((list->used > 0) && (list->used < (list->capacity/4))) {
+		list_resize_array(list,list->capacity/2);
+	}
+}
+
+//==========================================================================
 void list_finalize(listint_t* list){
         free(list->array);
         list->array = NULL;
@@ -130,9 +137,7 @@ int list_pop_front(listint_t* list){
 	memmove(list->array, (list->array+1), list->used);
 	
 	//Verify need for downsize
-	if (list->used < (list->capacity/4) {
-		list_resize_array(list->array,list->capacity/2);
-	}	
+        list_downsize_ifneed(list);	
 	
 	return result;
 }
@@ -144,9 +149,8 @@ int list_pop_back(listint_t* list){
 	int result = list->array[--list->used];
 	
 	//Verify need for downsize
-	if (list->used < (list->capacity/4)) {
-		list_resize_array(list,list->capacity/2);
-	}
+        list_downsize_ifneed(list);
+	
 	return result;
 }
 //==========================================================================

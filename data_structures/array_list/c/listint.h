@@ -28,12 +28,12 @@ void list_insert_back(listint_t* list, int value);
 void list_insert_at(listint_t* list, unsigned int pos, int value);
 
 //Returns the current size of the list
-inline unsigned int list_size(const listint_t* list){
+static inline unsigned int list_size(const listint_t* list){
 	return list->used;
 }
 
 //Retuns the current capacity of the list
-inline unsigned int list_capacity(const listint_t* list){
+static inline unsigned int list_capacity(const listint_t* list){
 	return list->capacity;
 }
 
@@ -41,7 +41,7 @@ inline unsigned int list_capacity(const listint_t* list){
 bool list_contains(const listint_t* list,int value);
 
 //Return the element at the specified position
-inline int list_element_at(const listint_t* list, unsigned int pos){
+static inline int list_element_at(const listint_t* list, unsigned int pos){
 	assert(pos < list->used);
 	return list->array[pos];
 }
