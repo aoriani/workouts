@@ -43,7 +43,7 @@ void test_insert_front(){
         ASSERT(list_size(&list) == 5);
         ASSERT(list_capacity(&list) == 8);
         for(int i = 0; i < list.used; i++){
-                ASSERT(list.array[4-i] == i);
+                ASSERT(list_element_at(&list,4-i) == i);
         }
         
         list_finalize(&list);
@@ -64,7 +64,7 @@ void test_insert_back(){
         ASSERT(list_size(&list) == 5);
         ASSERT(list_capacity(&list) == 8);
         for(int i = 0; i < list.used; i++){
-                ASSERT(list.array[i] == i);
+                ASSERT(list_element_at(&list,i) == i);
         }
         
        list_finalize(&list);
@@ -80,23 +80,30 @@ void test_insert_at(){
         ASSERT(list_size(&list) == 1);
         ASSERT(list.array[0] == 1);
         //Insert second
-        list_insert_at(&list,1,3);
+        list_insert_at(&list,1,4);
         ASSERT(list_size(&list) == 2);
-        ASSERT(list.array[1] == 3);
+        ASSERT(list.array[1] == 4);
         //Insert between
-        list_insert_at(&list,1,2);
+        list_insert_at(&list,1,3);
         ASSERT(list_size(&list) == 3);
-        ASSERT(list.array[0] == 1);
-        ASSERT(list.array[1] == 2);
-        ASSERT(list.array[2] == 3);
+        ASSERT(list_element_at(&list,0) == 1);
+        ASSERT(list_element_at(&list,1) == 3);
+        ASSERT(list_element_at(&list,2) == 4);
+        list_insert_at(&list,1,2);
+        ASSERT(list_size(&list) == 4);
+        ASSERT(list_element_at(&list,0) == 1);
+        ASSERT(list_element_at(&list,1) == 2);
+        ASSERT(list_element_at(&list,2) == 3);
+        ASSERT(list_element_at(&list,3) == 4);
         //insert beyond and close to power of 8
         list_insert_at(&list,7,8);
         ASSERT(list_size(&list) == 8);
         ASSERT(list_capacity(&list) == 16);
-        ASSERT(list.array[0] == 1);
-        ASSERT(list.array[1] == 2);
-        ASSERT(list.array[2] == 3);
-        ASSERT(list.array[7] == 8);
+        ASSERT(list_element_at(&list,0) == 1);
+        ASSERT(list_element_at(&list,1) == 2);
+        ASSERT(list_element_at(&list,2) == 3);
+        ASSERT(list_element_at(&list,3) == 4);
+        ASSERT(list_element_at(&list,7) == 8);
        
         list_finalize(&list);        
 }
@@ -141,6 +148,71 @@ void test_pop_back(){
         list_finalize(&list);
 }
 
+
+void test_pop_front(){
+        listint_t list;
+        list_init(&list);
+        
+        //Add one an then remove
+        list_insert_back(&list,1906);
+        ASSERT(list_size(&list) == 1);
+        ASSERT(list_pop_front(&list) == 1906);
+        ASSERT(list_size(&list) == 0);
+        
+        //Test reducing capacity
+        for (int i = 0; i < 5 ; i++){
+                list_insert_back(&list,i);
+        }        
+        ASSERT(list_capacity(&list) == 8);
+        for(int j = 0; j < 5; j++){
+                ASSERT(list_pop_front(&list) == j);
+        }
+        ASSERT(list_capacity(&list) == 4);
+        
+        list_finalize(&list);
+}
+
+void test_remove(){
+        listint_t list;
+        list_init(&list);
+        
+        //Remove empty list
+        ASSERT(list_remove(&list,55) == FALSE);
+        
+        //Add one then remove 
+        list_insert_back(&list,1);
+        ASSERT(list_remove(&list,0) == FALSE);
+        ASSERT(list_size(&list) == 1);
+        ASSERT(list_remove(&list,1) == TRUE);
+        ASSERT(list_size(&list) == 0);
+        
+        list_insert_back(&list,1);
+        list_insert_back(&list,2);
+        list_insert_back(&list,3);
+        list_insert_back(&list,4);
+        //Remove in some random order
+        ASSERT(list_remove(&list,3) == TRUE);
+        ASSERT(list_size(&list) == 3);        
+        ASSERT(list_element_at(&list,0) == 1);
+        ASSERT(list_element_at(&list,1) == 2);
+        ASSERT(list_element_at(&list,2) == 4);
+        //Remove 
+        ASSERT(list_remove(&list,1) == TRUE);
+        ASSERT(list_size(&list) == 2);
+        ASSERT(list_element_at(&list,0) == 2);
+        ASSERT(list_element_at(&list,1) == 4);
+        
+        ASSERT(list_remove(&list,2) == TRUE);
+        ASSERT(list_size(&list) == 1);
+        ASSERT(list_element_at(&list,0) == 4);
+        
+        ASSERT(list_remove(&list,4) == TRUE);
+        ASSERT(list_size(&list) == 0);
+        ASSERT(list_remove(&list,4) == FALSE);
+
+        list_finalize(&list);
+}
+
 int main(){
 
         testcase testcases[]={
@@ -149,7 +221,9 @@ int main(){
                 test_insert_back,
                 test_insert_at,
                 test_contains,
-                test_pop_back,        
+                test_pop_back,
+                test_pop_front,
+                test_remove,        
         };
 
         const int ntest_cases = sizeof(testcases)/sizeof(testcase);

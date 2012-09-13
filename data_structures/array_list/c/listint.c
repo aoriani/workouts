@@ -82,7 +82,7 @@ void list_insert_at(listint_t* list, unsigned int pos, int value){
 	//Open space in the array
 	if (pos < list->used){
 	    memmove((list->array + pos + 1),(list->array + pos),
-	                                        (list->used - pos + 1));
+	                                        (list->used - pos)*sizeof(int));
 	}
     
     list->array[pos] = value;
@@ -113,14 +113,15 @@ void list_finalize(listint_t* list){
         list->capacity = list->used = 0;
 }
 
-#if 0
 //==========================================================================
 bool list_remove(listint_t* list, int value){
+
 	for (unsigned int i = 0u; i < list->used; i++) {
 		if (list->array[i] == value){
 			//We found our element to remove
-			
-			
+			list->used--;
+			memmove(list->array + i, list->array + i + 1,
+			                             (list->used-i)*sizeof(int));
 			return TRUE;
 		}
 	}
@@ -134,14 +135,13 @@ int list_pop_front(listint_t* list){
 	list->used--;
 	
 	//move all the other elements to cover the hole open by the 0th element
-	memmove(list->array, (list->array+1), list->used);
+	memmove(list->array, (list->array+1), list->used * sizeof(int));
 	
 	//Verify need for downsize
         list_downsize_ifneed(list);	
 	
 	return result;
 }
-#endif  //if 0
 
 //==========================================================================
 int list_pop_back(listint_t* list){
@@ -153,7 +153,7 @@ int list_pop_back(listint_t* list){
 	
 	return result;
 }
-//==========================================================================
+
 
 
 
