@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <new>
 
-
 using std::size_t;
 
 namespace orion{
@@ -27,7 +26,6 @@ namespace orion{
                     resize_array(capacity/2);
                 }
             }
-            static unsigned roundup2power(unsigned value);
             
         public:
             List();
@@ -74,17 +72,8 @@ const size_t orion::List<T>::INITIAL_CAPACITY = 4;
 
 //==============================================================================
 template<typename T>
-unsigned orion::List<T>::roundup2power(unsigned value){
-    unsigned i;
-    for(i=0;value; value>>=1, i++);
-    return 1<<i;
-}
-
-//==============================================================================
-template<typename T>
 orion::List<T>::List():size(0),capacity(orion::List<T>::INITIAL_CAPACITY){
     array = new T[capacity];
-    array = 0;
 }
 
 //==============================================================================
@@ -101,6 +90,7 @@ orion::List<T>::List(const List<T>& list):size(list.size), capacity(list.capacit
 template<typename T>
 orion::List<T>::~List(){
     delete [] array;
+    array = 0;
 }
 
 //==============================================================================
@@ -129,7 +119,7 @@ void orion::List<T>::resize_array(size_t new_capacity){
     }
     T* previous_array = array;
     array = new T[new_capacity];
-    for (int i = 0; i < size; i++){
+    for (size_t i = 0; i < size; i++){
         array[i] = previous_array[i];
     }
     delete [] previous_array;
@@ -158,7 +148,7 @@ void orion::List<T>::insert_back(const T& elem){
         resize_array(2*capacity);
     } 
 
-    array[++size] = elem;
+    array[size++] = elem;
 }
 
 //==============================================================================
