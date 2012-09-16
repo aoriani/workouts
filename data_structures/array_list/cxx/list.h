@@ -44,9 +44,28 @@ namespace orion{
             bool contains(const T& elem);
             bool remove(const T& elem);
             const T& operator[] (const int index) const;
-            T& operator[] (const int index);             
+            T& operator[] (const int index);
+            
+            class Iterator;// forward declaration
+            Iterator begin();
+            Iterator end();
+            
+            class Iterator{
+                private:
+                    List* list;
+                    int currentPos;
+                    
+                    Iterator(List* list, int pos):list(list),currentPos(pos){}
+                    
+                public:
+                    bool operator==(const Iterator& it);
+                    bool operator!=(const Iterator& it);
+                    T& operator*();
+                    T* operator->();
+                    Iterator& operator++(); //prefix form
+                    Iterator operator++(int); //sufix form     
+            };             
     };
-
 }
 
 //==============================================================================
@@ -222,4 +241,63 @@ T& orion::List<T>::operator[](const int index){
     
     return array[index];
 }
+
+//==============================================================================
+template<typename T>
+typename orion::List<T>::Iterator orion::List<T>::begin(){
+    return Iterator(this,0);
+}
+
+//==============================================================================
+template<typename T>
+typename orion::List<T>::Iterator orion::List<T>::end(){
+    return Iterator(this,size);
+}
+
+//==============================================================================
+template<typename T>
+bool orion::List<T>::Iterator::operator==(const List<T>::Iterator& it){
+    if (this  == &it) return true;
+    else return ((list == it.list) && (currentPos == list.currentPos));
+}
+
+//==============================================================================
+template<typename T>
+bool orion::List<T>::Iterator::operator!=(const List<T>::Iterator& it){
+    return !( (*this) == it);
+
+}
+
+//==============================================================================
+template<typename T>
+T& orion::List<T>::Iterator::operator*(){
+    return (*list)[currentPos];
+}
+
+//==============================================================================
+template<typename T>
+T* orion::List<T>::Iterator::operator->(){
+    return &((*list)[currentPos]);
+}
+
+//==============================================================================
+template<typename T>
+//dependent scope needs typename so compilers know Iterator is a type not a var
+typename orion::List<T>::Iterator& orion::List<T>::Iterator::operator++(){
+    currentPos = (currentPos < list->size())?(currentPos+1):list->size();
+    return (*this);
+}
+
+//==============================================================================
+template<typename T>
+//dependent scope needs typename so compilers know Iterator is a type not a var
+typename orion::List<T>::Iterator orion::List<T>::Iterator::operator++(int){
+    //do a copy to return 
+    Iterator tmp = (*this);      
+    currentPos = (currentPos < list->size())?(currentPos+1):list->size();
+    return tmp;
+}
+
+//==============================================================================
 #endif //ORION_LIST_H
+
