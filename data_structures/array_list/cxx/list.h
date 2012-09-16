@@ -41,8 +41,8 @@ namespace orion{
             T pop_back();
             bool contains(const T& elem);
             bool remove(const T& elem);
-            const T& operator[] (const int index) const;
-            T& operator[] (const int index);
+            const T& operator[] (const size_t index) const;
+            T& operator[] (const size_t index);
             
             class Iterator;// forward declaration
             Iterator begin();
@@ -51,9 +51,9 @@ namespace orion{
             class Iterator{
                 private:
                     List* list;
-                    int currentPos;
+                    size_t currentPos;
                     
-                    Iterator(List* list, int pos):list(list),currentPos(pos){}
+                    Iterator(List* list, size_t pos):list(list),currentPos(pos){}
                     
                 public:
                     bool operator==(const Iterator& it);
@@ -80,7 +80,7 @@ orion::List<T>::List():size(0),capacity(orion::List<T>::INITIAL_CAPACITY){
 template<typename T>
 orion::List<T>::List(const List<T>& list):size(list.size), capacity(list.capacity){
     array = new T[capacity];
-    for(int i = 0; i < size; i++){
+    for(size_t i = 0; i < size; i++){
         // we cannot assume trivial copy-construtor and use memcpy
         array[i] = list.array[i];
     }
@@ -99,16 +99,21 @@ const orion::List<T>& orion::List<T>::operator= (const List<T>& list){
     //Avoid self-assignment 
     if(this != &list){
         //TODO: use implicit sharing
-        delete[] array;
+        //Check if we need a new array
+        if( capacity != list.capacity){
+            delete[] array;
+            array = new T[list.capacity];
+        }
+        
         capacity = list.capacity;
         size = list.size;
-        array = new T[capacity];
-        for(int i = 0; i < size; i++){
+        for(size_t i = 0; i < size; i++){
             array[i] = list.array[i];
         }   
-    }      
+    }
+    
+    return (*this);      
 }
-
 
 //==============================================================================
 template<typename T>
@@ -118,7 +123,8 @@ void orion::List<T>::resize_array(size_t new_capacity){
                                         "size");
     }
     T* previous_array = array;
-    array = new T[new_capacity];
+    capacity = new_capacity;
+    array = new T[capacity];
     for (size_t i = 0; i < size; i++){
         array[i] = previous_array[i];
     }
@@ -133,7 +139,7 @@ void orion::List<T>::insert_front(const T& elem){
     }    
     
     //open space in the front
-    for(int i = size; i> 0; i--){
+    for(size_t i = size; i> 0; i--){
         array[i] = array[i-1];
     }
     
@@ -161,7 +167,7 @@ T orion::List<T>::pop_front(){
     T elem = array[0];
     
     //copy over
-    for(int i = 0; i < (size-1); i++){
+    for(size_t i = 0; i < (size-1); i++){
         array[i] = array[i+1];
     } 
     size--;
@@ -185,7 +191,7 @@ T orion::List<T>::pop_back(){
 //==============================================================================
 template<typename T>
 bool orion::List<T>::contains(const T& elem){
-    for(int i = 0; i < size; i++){
+    for(size_t i = 0; i < size; i++){
         if(array[i] == elem){
             return true;
         }
@@ -196,11 +202,11 @@ bool orion::List<T>::contains(const T& elem){
 //==============================================================================
 template<typename T>
 bool orion::List<T>::remove(const T& elem){
-    for(int i = 0; i < size; i++){
+    for(size_t i = 0; i < size; i++){
         if(array[i] == elem){
             
             //copy over
-            for(int j = i; j < (size-1); j++){
+            for(size_t j = i; j < (size-1); j++){
                 array[j]=array[j+1];
             } 
                         
@@ -214,7 +220,7 @@ bool orion::List<T>::remove(const T& elem){
 
 //==============================================================================
 template<typename T>
-const T& orion::List<T>::operator[](const int index) const{
+const T& orion::List<T>::operator[](const size_t index) const{
     if((index < 0) || (index >= size)){
         throw std::range_error("Index out of bounds");
     }
@@ -224,7 +230,7 @@ const T& orion::List<T>::operator[](const int index) const{
 
 //==============================================================================
 template<typename T>
-T& orion::List<T>::operator[](const int index){
+T& orion::List<T>::operator[](const size_t index){
     if((index < 0) || (index >= size)){
         throw std::range_error("Index out of bounds");
     }
