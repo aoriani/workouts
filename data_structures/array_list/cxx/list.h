@@ -43,8 +43,8 @@ namespace orion{
             T pop_back();
             bool contains(const T& elem);
             bool remove(const T& elem);
-            const T& operator[] (int index) const;
-            T& operator[] (int index);             
+            const T& operator[] (const int index) const;
+            T& operator[] (const int index);             
     };
 
 }
@@ -65,6 +65,7 @@ unsigned orion::List<T>::roundup2power(unsigned value){
 template<typename T>
 orion::List<T>::List():size(0),capacity(orion::List<T>::INITIAL_CAPACITY){
     array = new T[capacity];
+    array = 0;
 }
 
 //==============================================================================
@@ -184,6 +185,41 @@ bool orion::List<T>::contains(const T& elem){
 }
 
 //==============================================================================
+template<typename T>
+bool orion::List<T>::remove(const T& elem){
+    for(int i = 0; i < size; i++){
+        if(array[i] == elem){
+            
+            //copy over
+            for(int j = i; j < (size-1); j++){
+                array[j]=array[j+1];
+            } 
+                        
+            size--;
+            downsizeIfNeeded();
+            return true;
+        }
+    }
+    return false;
+}
 
+//==============================================================================
+template<typename T>
+const T& orion::List<T>::operator[](const int index) const{
+    if((index < 0) || (index >= size)){
+        throw std::range_error("Index out of bounds");
+    }
+    
+    return array[index];
+}
 
+//==============================================================================
+template<typename T>
+T& orion::List<T>::operator[](const int index){
+    if((index < 0) || (index >= size)){
+        throw std::range_error("Index out of bounds");
+    }
+    
+    return array[index];
+}
 #endif //ORION_LIST_H
