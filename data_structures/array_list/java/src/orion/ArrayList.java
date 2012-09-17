@@ -18,7 +18,17 @@ public class ArrayList<T> implements List<T>{
     private T[] array = (T[])new Object[capacity];
 
 
+    /**
+     * The constructor
+     */
     public ArrayList(){}
+    
+    /**
+     * @returns the capacityof the arraylist
+     */
+    public int capacity(){
+        return capacity;
+    }
     
     /**
      * {@inheritDoc}
