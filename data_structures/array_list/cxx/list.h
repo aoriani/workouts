@@ -49,6 +49,9 @@ namespace orion{
             Iterator end();
             
             class Iterator{
+            
+                friend class List<T>;    
+                
                 private:
                     List* list;
                     size_t currentPos;
@@ -56,8 +59,8 @@ namespace orion{
                     Iterator(List* list, size_t pos):list(list),currentPos(pos){}
                     
                 public:
-                    bool operator==(const Iterator& it);
-                    bool operator!=(const Iterator& it);
+                    bool operator==(const Iterator& it) const;
+                    bool operator!=(const Iterator& it) const;
                     T& operator*();
                     T* operator->();
                     Iterator& operator++(); //prefix form
@@ -184,7 +187,10 @@ T orion::List<T>::pop_back(){
         throw std::length_error("Cannot pop empty list");
     }
     
-    T elem = array[size--];
+    T elem = array[--size];
+
+    downsizeIfNeeded();
+        
     return elem;   
 }
 
@@ -252,14 +258,17 @@ typename orion::List<T>::Iterator orion::List<T>::end(){
 
 //==============================================================================
 template<typename T>
-bool orion::List<T>::Iterator::operator==(const List<T>::Iterator& it){
-    if (this  == &it) return true;
-    else return ((list == it.list) && (currentPos == list.currentPos));
+bool orion::List<T>::Iterator::operator==(const List<T>::Iterator& it) const{
+    if (this  == &it){
+        return true;
+    }else {
+        return ((list == it.list) && (currentPos == it.currentPos));
+    }
 }
 
 //==============================================================================
 template<typename T>
-bool orion::List<T>::Iterator::operator!=(const List<T>::Iterator& it){
+bool orion::List<T>::Iterator::operator!=(const List<T>::Iterator& it) const{
     return !( (*this) == it);
 
 }
@@ -280,7 +289,7 @@ T* orion::List<T>::Iterator::operator->(){
 template<typename T>
 //dependent scope needs typename so compilers know Iterator is a type not a var
 typename orion::List<T>::Iterator& orion::List<T>::Iterator::operator++(){
-    currentPos = (currentPos < list->size())?(currentPos+1):list->size();
+    currentPos = (currentPos < list->getSize())?(currentPos+1):list->getSize();
     return (*this);
 }
 
@@ -290,7 +299,7 @@ template<typename T>
 typename orion::List<T>::Iterator orion::List<T>::Iterator::operator++(int){
     //do a copy to return 
     Iterator tmp = (*this);      
-    currentPos = (currentPos < list->size())?(currentPos+1):list->size();
+    currentPos = (currentPos < list->getSize())?(currentPos+1):list->getSize();
     return tmp;
 }
 

@@ -21,3 +21,6 @@ $(GTEST_STATIC_LIB):
 	
 clean:
 	rm *.o *.a
+	
+valgrind:
+	valgrind ./$(EXECUTABLE)
