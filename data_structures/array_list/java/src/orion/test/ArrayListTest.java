@@ -10,7 +10,7 @@ public class ArrayListTest{
     @Test
     public void testConstructor(){
         ArrayList<String> list = new ArrayList<String>();
-        assertEquals("capacity should be four",4,list.capacity());
+        assertEquals("capacity should be four",4,list.capacity());      
     }
     
 
