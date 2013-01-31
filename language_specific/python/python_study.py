@@ -68,6 +68,8 @@ print("Interview question: invert a string: " + "123456789"[::-1])
 
 print("Repr is not the same as \tstr - " + repr("Repr is not the same as \tstr"))
 
+print([ ord(x) for x in "We need programmers that work for beer"])
 
+print("".join([chr(i) for i in [65,65+13,65+3,65+17,65+4]]))
 
 
