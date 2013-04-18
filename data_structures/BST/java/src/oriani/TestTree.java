@@ -6,6 +6,15 @@ import java.util.*;
 
 public class TestTree{
 
+    //This tree try to test every subtree variation 
+    //THIS IS NOT A GOOD PRACTICE, WRITE A TEST FOR EACH VARIATION
+    // I am doing that to speed up.
+    static final Integer testElements[] ={50,25,75,12,35,60,80,5,100,8,90,7,91};
+    static final Integer preOrderElements[]=                             {50,25,12,5,8,7,35,75,60,80,100,90,91};
+    static final Integer inOrderElements[] = {5,7,8,12,25,35,50,60,75,80,90,91,100};
+    static final Integer posOrderElements[] = {7,8,5,12,35,25,60,91,90,100,80,75,50};
+
+
     @Ignore
     static class MyVisitor<T> implements Tree.Visitor<T>{
         List<T> actual = new ArrayList<T>();
@@ -20,12 +29,11 @@ public class TestTree{
         //I know that I should a test should test only one method 
         // but tree traversal is the way to check the insertions
         Tree<Integer> tree = new Tree<Integer>();
-        tree.insertI(20).insertI(15).insertI(30).insertI(14).insertI(16)
-            .insertI(25).insertI(31).insertI(10).insertI(32).insertI(1)
-            .insertI(33);
+        for (int e : testElements){
+            tree.insertI(e);
+        }
             
-        Integer array[] = {20,15,14,10,1,16,30,25,31,32,33};
-        List<Integer> expected = Arrays.asList(array);
+        List<Integer> expected = Arrays.asList(preOrderElements);
         MyVisitor<Integer> v = new MyVisitor<Integer>();
         tree.preorderR(v);
         assertEquals(expected,v.actual);    
@@ -34,13 +42,11 @@ public class TestTree{
     ///Test recursive inorder traversal
     @Test public void testRecursiveInorderTraversal(){
         Tree<Integer> tree = new Tree<Integer>();
-        tree.insertI(20).insertI(15).insertI(30).insertI(14).insertI(16)
-            .insertI(25).insertI(31).insertI(10).insertI(32).insertI(1)
-            .insertI(33);
-            
-        Integer array[] = {1,10,14,15,16,20,25,30,31,32,33};
+        for (int e : testElements){
+            tree.insertI(e);
+        }
 
-        List<Integer> expected = Arrays.asList(array);
+        List<Integer> expected = Arrays.asList(inOrderElements);
         MyVisitor<Integer> v = new MyVisitor<Integer>();
         tree.inorderR(v);
         assertEquals(expected,v.actual);    
@@ -50,13 +56,11 @@ public class TestTree{
     ///Test recursive inorder traversal
     @Test public void testRecursivePosorderTraversal(){
         Tree<Integer> tree = new Tree<Integer>();
-        tree.insertI(20).insertI(15).insertI(30).insertI(14).insertI(16)
-            .insertI(25).insertI(31).insertI(10).insertI(32).insertI(1)
-            .insertI(33);
+        for (int e : testElements){
+            tree.insertI(e);
+        }
             
-        Integer array[] = {1,10,14,16,15,25,33,32,31,30,20};
-
-        List<Integer> expected = Arrays.asList(array);
+        List<Integer> expected = Arrays.asList(posOrderElements);
         MyVisitor<Integer> v = new MyVisitor<Integer>();
         tree.posorderR(v);
         assertEquals(expected,v.actual);    
@@ -65,12 +69,11 @@ public class TestTree{
     ///Test interative preoder
     @Test public void testIterativePreorder(){
         Tree<Integer> tree = new Tree<Integer>();
-        tree.insertI(20).insertI(15).insertI(30).insertI(14).insertI(16)
-            .insertI(25).insertI(31).insertI(10).insertI(32).insertI(1)
-            .insertI(33);
-            
-        Integer array[] = {20,15,14,10,1,16,30,25,31,32,33};
-        List<Integer> expected = Arrays.asList(array);
+        for (int e : testElements){
+            tree.insertI(e);
+        }
+
+        List<Integer> expected = Arrays.asList(preOrderElements);
         MyVisitor<Integer> v = new MyVisitor<Integer>();
         tree.preorderI(v);
         assertEquals(expected,v.actual);

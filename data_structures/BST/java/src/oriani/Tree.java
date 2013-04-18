@@ -12,7 +12,6 @@ import java.util.*;
  */
 public class Tree<T extends Comparable<T>> { 
 
-
     static class Node<T extends Comparable<T>>{
         T value;
         Node<T> left,right;
@@ -29,9 +28,7 @@ public class Tree<T extends Comparable<T>> {
     
     /// The root for the tree 
     private Node<T> root = null;
-    
-    public Tree(){}
-    
+        
     
     /**
      * Insert a value iteratively
@@ -67,6 +64,81 @@ public class Tree<T extends Comparable<T>> {
         return this;
     }
     
+    /**
+     * Insert a value recursively
+     * @param value  data to be inserted on the tree
+     * @returns the tree to allow chaining
+     */ 
+     public Tree<T> insertR(T value){
+        
+        Node<T> newNode = new Node<T>(value);
+        
+        if(root == null){
+            root = newNode;
+        }else{
+            insertR(root,newNode);
+        }       
+        return this;
+     }
+     
+     private void insertR(Node<T> node, Node<T> newNode){
+        if(newNode.value.compareTo(node.value) > 0 ){
+            if(node.right == null){
+                node.right = newNode;
+            }else{
+                insertR(node.right, newNode);
+            }
+        }else{
+            if(node.left == null){
+                node.left = newNode;
+            }else{
+                insertR(node.left, newNode);
+            }
+        }
+     }
+    
+    
+    /**
+     *  Verify if a value is present iteratively
+     *  @param value the value to be searched
+     *  @returns true if found, false otherwise
+     */
+     
+     public boolean hasI(T value){
+        Node<T> curr = root;
+        
+        while(curr != null){
+            if(curr.value.equals(value)){
+                return true;
+            }else if(value.compareTo(curr.value) > 0){
+                curr = curr.right;
+            }else{
+                curr = curr.left;
+            }
+        } 
+        return false;      
+     }
+
+    /**
+     *  Verify if a value is present recursively
+     *  @param value the value to be searched
+     *  @returns true if found, false otherwise
+     */
+    public boolean hasR(T value){
+        return hasR(root,value);
+    }  
+    
+    private boolean hasR(Node<T> node, T value){
+        if(node == null){
+            return false; 
+        }else if(node.value.equals(value)){
+            return true;
+        }else if(value.compareTo(node.value) > 0 ){
+            return hasR(node.right, value);
+        }else{
+            return hasR(node.right, value);
+        }
+    }  
     
     /**
      *  Recursive preorder traversal
@@ -140,6 +212,29 @@ public class Tree<T extends Comparable<T>> {
      
      
     /**
+     *  Iterative inorder traversal
+     *  @param visitor The object that will be called for each node visited
+     */
+     public void inorderI(Visitor<T> visitor){
+        if(root != null){
+            Stack<Node<T>> stack = new Stack<Node<T>>();
+            Node<T> curr = root;
+            while(curr != null || !stack.isEmpty()){
+                if(curr != null){
+                    stack.push(curr);
+                    curr = curr.right;
+                }else{
+                    curr = stack.pop();
+                    visitor.visit(curr.value);
+                    curr = curr.right;
+                }
+            }
+        }
+    }
+
+     
+     
+    /**
      *  Breadth first traversal
      *  @param visitor The object that will be called for each node visited
      */  
@@ -147,7 +242,7 @@ public class Tree<T extends Comparable<T>> {
         if(root != null){
             Queue<Node<T>> queue = new LinkedList<Node<T>>();
             queue.offer(root);
-            while(!queue.isEmpty){
+            while(!queue.isEmpty()){
                 Node<T> currNode = queue.poll();
                 if(currNode.left != null){
                     queue.offer(currNode.left);
