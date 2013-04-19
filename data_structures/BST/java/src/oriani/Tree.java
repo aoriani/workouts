@@ -222,7 +222,7 @@ public class Tree<T extends Comparable<T>> {
             while(curr != null || !stack.isEmpty()){
                 if(curr != null){
                     stack.push(curr);
-                    curr = curr.right;
+                    curr = curr.left;
                 }else{
                     curr = stack.pop();
                     visitor.visit(curr.value);

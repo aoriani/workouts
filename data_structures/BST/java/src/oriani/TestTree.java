@@ -70,16 +70,29 @@ public class TestTree{
     @Test public void testIterativePreorder(){
         Tree<Integer> tree = new Tree<Integer>();
         for (int e : testElements){
-            tree.insertI(e);
+            tree.insertR(e);
         }
 
         List<Integer> expected = Arrays.asList(preOrderElements);
         MyVisitor<Integer> v = new MyVisitor<Integer>();
         tree.preorderI(v);
-        assertEquals(expected,v.actual);
-        
-    
+        assertEquals(expected,v.actual);   
     }
+    
+    @Test public void testIterativeIneorder(){
+        //I know that I should a test should test only one method 
+        // but tree traversal is the way to check the insertions
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }
+            
+        List<Integer> expected = Arrays.asList(inOrderElements);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.inorderI(v);
+        assertEquals(expected,v.actual);    
+    }
+    
 
 
 }
