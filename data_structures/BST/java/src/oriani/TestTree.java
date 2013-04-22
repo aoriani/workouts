@@ -93,6 +93,18 @@ public class TestTree{
         assertEquals(expected,v.actual);    
     }
     
+    ///Test recursive inorder traversal
+    @Test public void testIterativePosorderTraversal(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }
+            
+        List<Integer> expected = Arrays.asList(posOrderElements);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.posorderI(v);
+        assertEquals(expected,v.actual);    
+    }
 
 
 }

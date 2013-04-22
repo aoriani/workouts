@@ -232,6 +232,44 @@ public class Tree<T extends Comparable<T>> {
         }
     }
 
+    /**
+     *  Iterative posorder traversal
+     *  @param visitor The object that will be called for each node visited
+     */
+     public void posorderI(Visitor<T> visitor){
+        if(root != null){
+            Stack<Node<T>> stack = new Stack<Node<T>>();
+            Node<T> curr = root;
+            Node<T> lastPopped = null;
+            do{
+                if(curr != null){
+                    stack.push(curr);
+                    curr = curr.left;
+                }else{
+                    Node<T> currentTop = stack.peek();
+                    if(lastPopped != null && currentTop.right == lastPopped){
+                        //We are returning from the right subtree, now we need 
+                        //to pop the root of subtree
+                        lastPopped = stack.pop();
+                        visitor.visit(lastPopped.value);
+                        //curr must continue to be null to force another peek
+                    }else if (currentTop.right == null){
+                        //There is no right subtree to visit. We can pop the 
+                        //root of subtree
+                        lastPopped = stack.pop();
+                        visitor.visit(lastPopped.value);
+                        //curr must continue to be null to force another peek                        
+                    }else{
+                        //We are about to descend to the right subtree
+                        //we leave the subtree's root on the stack
+                        //so we can visit it later
+                        curr = currentTop.right;
+                    }                    
+                }
+            }while(!stack.isEmpty());
+        }
+    }
+
      
      
     /**
