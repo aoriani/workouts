@@ -11,13 +11,18 @@
 </path>
 
 <target name="compile">
+    <mkdir dir="${build.dir}" />
     <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" debug="true">
 	<compilerarg value="-Xlint:unchecked" />
         <classpath refid="junit.class.path" />
     </javac>        
 </target>
 
- <target name="test" depends="compile">
+<target name="clean">
+    <delete dir="${build.dir}" />
+</target>
+
+<target name="test" depends="compile">
     <junit printsummary="on" fork="true" haltonfailure="yes">
       <classpath refid="junit.class.path" />
       <formatter type="plain" />

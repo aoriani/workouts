@@ -136,7 +136,7 @@ public class Tree<T extends Comparable<T>> {
         }else if(value.compareTo(node.value) > 0 ){
             return hasR(node.right, value);
         }else{
-            return hasR(node.right, value);
+            return hasR(node.left, value);
         }
     }  
     
@@ -247,18 +247,14 @@ public class Tree<T extends Comparable<T>> {
                     curr = curr.left;
                 }else{
                     Node<T> currentTop = stack.peek();
-                    if(lastPopped != null && currentTop.right == lastPopped){
-                        //We are returning from the right subtree, now we need 
-                        //to pop the root of subtree
+                    if((lastPopped != null && currentTop.right == lastPopped) ||
+                            (currentTop.right == null)){
+                        //Either we are returning from the right subtree or
+                        //there is no right subtree to visit
+                        // In either case we can pop the root of the subtree
                         lastPopped = stack.pop();
                         visitor.visit(lastPopped.value);
                         //curr must continue to be null to force another peek
-                    }else if (currentTop.right == null){
-                        //There is no right subtree to visit. We can pop the 
-                        //root of subtree
-                        lastPopped = stack.pop();
-                        visitor.visit(lastPopped.value);
-                        //curr must continue to be null to force another peek                        
                     }else{
                         //We are about to descend to the right subtree
                         //we leave the subtree's root on the stack
@@ -269,8 +265,6 @@ public class Tree<T extends Comparable<T>> {
             }while(!stack.isEmpty());
         }
     }
-
-     
      
     /**
      *  Breadth first traversal
@@ -308,5 +302,29 @@ public class Tree<T extends Comparable<T>> {
         }else return 0;
     }
     
+    
+    /**
+     * Find the lowest common ancestor for a pair of value in the tree
+     * @param a first value - MUST BE ON TREE
+     * @param b second value - MUST BE ON TREE
+     */
+    public T lowestCommonAncestor(T a, T b){
+            //Must enable assertions to work
+            assert hasI(a);
+            assert hasI(b);
+            
+            Node<T> aux = root;
+            
+            while(true){
+                if((a.compareTo(aux.value) > 0) &&  (b.compareTo(aux.value) > 0)){
+                    aux = aux.right;//Never to be null because both a and b are in tree
+                }else if ((a.compareTo(aux.value) < 0) &&  (b.compareTo(aux.value) < 0)){
+                    aux = aux.left;//Never to be null because both a and b are in tree
+                }else{
+                    return aux.value;
+                }
+            }
+        
+    }
     
 }
