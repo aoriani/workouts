@@ -254,5 +254,34 @@ public class TestTree{
         }
         assertEquals(Integer.valueOf(25),tree.lowestCommonAncestor(12,35));        
     }
+
+    /** Test LCA for  not sibling*/
+    @Test public void testLCANotSiblings(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }
+        assertEquals(Integer.valueOf(75),tree.lowestCommonAncestor(60,91));        
+    }
+
+    
+    /** Test LCA  when LCA is root */
+    @Test public void testLCARoot(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }
+        assertEquals(Integer.valueOf(50),tree.lowestCommonAncestor(7,91));        
+    }
+
+
+    /** Test LCA  when LCA is one of the supplied nodes */
+    @Test public void testLCAOneOfTheNodes(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }
+        assertEquals(Integer.valueOf(80),tree.lowestCommonAncestor(80,91));        
+    }
 }
 
