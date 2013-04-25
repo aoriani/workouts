@@ -331,6 +331,7 @@ public class Tree<T extends Comparable<T>> {
     }
     
     
+    
     /**
      * Remove a value from the tree
      * @param value value to be removed
@@ -340,77 +341,22 @@ public class Tree<T extends Comparable<T>> {
      public boolean remove(T value){
         if(root == null) return false; // There is nothing to remove
         
-        //especial case? remove root
         if(root.value.equals(value)){
-            if(root.right == null && root.left == null){
-                root = null;
-            }else if (root.right == null){
-                root = root.left;
-            }else if (root.left == null){
-                root = root.right;
-            }else{
-                Node<T> toBeDeleted = root;
-                Node<T> parentRightMost = findPreviousRightMostOnLeftSubtree(root);
-                if(parentRightMost == toBeDeleted){ //Left son has non right son so it is the rightmost
-                    root = toBeDeleted.left;
-                    toBeDeleted.left.right = toBeDeleted.right;
-                }else{
-                    Node<T> rightMost = parentRightMost.right;
-                    parentRightMost.right = rightMost.left;
-                    root = rightMost;
-                    rightMost.left = toBeDeleted.left;
-                    rightMost.right = toBeDeleted.right;
-                }
-            }
-        
+            root = removeMergeAlgorithm(root);   
         }else{
             Node<T> parent = findParentOfNodeToBeDeleted(value);
             if(parent == null) return false; //Not in the tree
             
             if(value.compareTo(parent.value) > 0){
-                if(parent.right.left == null){
-                    parent.right = parent.right.right;
-                }else if(parent.right.right == null){
-                    parent.right = parent.right.left;
-                }else{ //Has both sons
-                    Node<T> toBeDeleted = parent.right;
-                    Node<T> parentRightMost = findPreviousRightMostOnLeftSubtree(parent.right);
-                    if(parentRightMost == toBeDeleted){ //Left son has non right son so it is the rightmost
-                       parent.right = toBeDeleted.left;
-                       toBeDeleted.left.right = toBeDeleted.right;
-                    }else{
-                        Node<T> rightMost = parentRightMost.right;
-                        parentRightMost.right = rightMost.left;
-                        parent.right = rightMost;
-                        rightMost.left = toBeDeleted.left;
-                        rightMost.right = toBeDeleted.right;
-                    }
-                }
+                parent.right = removeMergeAlgorithm(parent.right);
             }else{
-                if(parent.left.left == null){
-                    parent.left = parent.left.right;
-                }else if(parent.left.right == null){
-                    parent.left = parent.left.left;
-                }else{//Has both sons
-                    Node<T> toBeDeleted = parent.left;
-                    Node<T> parentRightMost = findPreviousRightMostOnLeftSubtree(parent.left);
-                    if(parentRightMost == toBeDeleted){ //Left son has non right son so it is the rightmost
-                       parent.left = toBeDeleted.left;
-                       toBeDeleted.left.right = toBeDeleted.right;
-                    }else{
-                        Node<T> rightMost = parentRightMost.right;
-                        parentRightMost.right = rightMost.left;
-                        parent.left = rightMost;
-                        rightMost.left = toBeDeleted.left;
-                        rightMost.right = toBeDeleted.right;
-                    }
-                }
+                parent.left = removeMergeAlgorithm(parent.left);
             }
         }
         return true;
      }
           
-     Node<T> findParentOfNodeToBeDeleted(T value){
+    Node<T> findParentOfNodeToBeDeleted(T value){
         Node<T> previous = null, curr = root;   
         while((curr != null) && (!curr.value.equals(value))){
             previous = curr;
@@ -421,14 +367,35 @@ public class Tree<T extends Comparable<T>> {
             }
         }
         if(curr != null) return previous; else return null;
-     }
+    }
      
-     Node<T> findPreviousRightMostOnLeftSubtree(Node<T> curr){
+    Node<T> findPreviousRightMostOnLeftSubtree(Node<T> curr){
         //Move to left node
         Node<T> previous = curr;
         curr = curr.left;
         // then try to mode to the right as most as possible
         while(curr.right != null){ previous = curr;curr = curr.right;}
         return previous; 
+    }
+     
+    private Node<T> removeMergeAlgorithm(Node<T> toBeDeleted){     
+        if(toBeDeleted.right == null){
+            return toBeDeleted.left;
+        }else if(toBeDeleted.left == null){
+            return toBeDeleted.right;
+        }else{
+            Node<T> parentRightMost = findPreviousRightMostOnLeftSubtree(toBeDeleted);
+            if(parentRightMost == toBeDeleted){ //Left son has non right son so it is the rightmost
+                toBeDeleted.left.right = toBeDeleted.right;
+                return toBeDeleted.left;
+            }else{
+                Node<T> rightMost = parentRightMost.right;
+                parentRightMost.right = rightMost.left;
+                rightMost.left = toBeDeleted.left;
+                rightMost.right = toBeDeleted.right;
+                return rightMost;
+            }
+        }
      }
+
 }
