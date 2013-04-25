@@ -283,5 +283,174 @@ public class TestTree{
         }
         assertEquals(Integer.valueOf(80),tree.lowestCommonAncestor(80,91));        
     }
+    
+    /**Test function to find the parent of node to be delete*/
+    @Test public void testRemoveFindParent(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }
+        
+        //Batch test not good, but results are faster
+        assertNull(tree.findParentOfNodeToBeDeleted(120));
+        //son of root
+        assertEquals(Integer.valueOf(50), tree.findParentOfNodeToBeDeleted(75).value);
+        //Leaf
+        assertEquals(Integer.valueOf(8), tree.findParentOfNodeToBeDeleted(7).value);
+        //Internal Node
+        assertEquals(Integer.valueOf(25), tree.findParentOfNodeToBeDeleted(12).value);
+    }
+    
+    @Test public void testRemoveNonExistentNode(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }        
+        assertFalse(tree.remove(102));
+    }
+    
+    @Test public void testRemoveSingleNodeTree(){
+        Tree<Integer> tree = new Tree<Integer>();
+        tree.insertI(1);
+        assertTrue(tree.remove(1));
+        assertTrue(tree.isEmpty());
+    }
+    
+    @Test public void testRemoveRootWithLeftNode(){
+        Tree<Integer> tree = new Tree<Integer>();
+        tree.insertI(2).insertI(1);
+        assertTrue(tree.remove(2));
+        assertFalse(tree.isEmpty());
+        
+        Integer[] newTree = {1};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+    
+    @Test public void testRemoveRootWithRightNode(){
+        Tree<Integer> tree = new Tree<Integer>();
+        tree.insertI(1).insertI(2);
+        assertTrue(tree.remove(1));
+        assertFalse(tree.isEmpty());
+        
+        Integer[] newTree = {2};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+    
+    @Test public void testRemoveRootWithBothSons(){
+        Tree<Integer> tree = new Tree<Integer>();
+        tree.insertI(2).insertI(1).insertI(3);
+        assertTrue(tree.remove(2));
+        assertFalse(tree.isEmpty());
+        
+        Integer[] newTree = {1,3};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+    
+    @Test public void testRemoveRootBigTree(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }      
+        assertTrue(tree.remove(50));
+        assertFalse(tree.isEmpty());
+        
+        Integer[] newTree = {35,25,75,12,60,80,5,100,8,90,7,91};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+      
+    @Test public void testRemoveLeafLeft(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }      
+        assertTrue(tree.remove(7));
+        Integer[] newTree = {50,25,75,12,35,60,80,5,100,8,90,91};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+    
+    @Test public void testRemoveLeafRight(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }      
+        assertTrue(tree.remove(91));
+        Integer[] newTree = {50,25,75,12,35,60,80,5,100,8,90,7};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+
+    @Test public void testRemoveSingleSonLeft(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }      
+        assertTrue(tree.remove(12));
+        Integer[] newTree = {50,25,75,5,35,60,80,8,100,7,90,91};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+    
+    @Test public void testRemoveSingleSonRight(){
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : testElements){
+            tree.insertI(e);
+        }      
+        assertTrue(tree.remove(100));
+        Integer[] newTree = {50,25,75,12,35,60,80,5,90,8,91,7};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+    
+    @Test public void testRemoveInternalBothSonWithRightMost(){
+        Integer[] oldTree = {30,20,40,7,21,10,15,14};
+    
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : oldTree){
+            tree.insertI(e);
+        }      
+        assertTrue(tree.remove(20));
+        Integer[] newTree = {30,15,40,7,21,10,14};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+    
+    @Test public void testRemoveInternalBothSonWithNoRightMost(){
+        Integer[] oldTree = {30,20,40,35,41,34};
+    
+        Tree<Integer> tree = new Tree<Integer>();
+        for (int e : oldTree){
+            tree.insertI(e);
+        }      
+        assertTrue(tree.remove(40));
+        Integer[] newTree = {30,20,35,34,41};
+        List<Integer> expected = Arrays.asList(newTree);
+        MyVisitor<Integer> v = new MyVisitor<Integer>();
+        tree.breadthFirst(v);
+        assertEquals(expected,v.actual);                 
+    }
+
 }
 

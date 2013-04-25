@@ -30,6 +30,10 @@ public class Tree<T extends Comparable<T>> {
     private Node<T> root = null;
         
     
+    public boolean isEmpty(){
+        return (root == null);
+    }
+    
     /**
      * Insert a value iteratively
      * @param value  data to be inserted on the tree
@@ -323,8 +327,108 @@ public class Tree<T extends Comparable<T>> {
                 }else{
                     return aux.value;
                 }
-            }
-        
+            }        
     }
     
+    
+    /**
+     * Remove a value from the tree
+     * @param value value to be removed
+     * @returns true if removed, false otherwise
+     */
+     
+     public boolean remove(T value){
+        if(root == null) return false; // There is nothing to remove
+        
+        //especial case? remove root
+        if(root.value.equals(value)){
+            if(root.right == null && root.left == null){
+                root = null;
+            }else if (root.right == null){
+                root = root.left;
+            }else if (root.left == null){
+                root = root.right;
+            }else{
+                Node<T> toBeDeleted = root;
+                Node<T> parentRightMost = findPreviousRightMostOnLeftSubtree(root);
+                if(parentRightMost == toBeDeleted){ //Left son has non right son so it is the rightmost
+                    root = toBeDeleted.left;
+                    toBeDeleted.left.right = toBeDeleted.right;
+                }else{
+                    Node<T> rightMost = parentRightMost.right;
+                    parentRightMost.right = rightMost.left;
+                    root = rightMost;
+                    rightMost.left = toBeDeleted.left;
+                    rightMost.right = toBeDeleted.right;
+                }
+            }
+        
+        }else{
+            Node<T> parent = findParentOfNodeToBeDeleted(value);
+            if(parent == null) return false; //Not in the tree
+            
+            if(value.compareTo(parent.value) > 0){
+                if(parent.right.left == null){
+                    parent.right = parent.right.right;
+                }else if(parent.right.right == null){
+                    parent.right = parent.right.left;
+                }else{ //Has both sons
+                    Node<T> toBeDeleted = parent.right;
+                    Node<T> parentRightMost = findPreviousRightMostOnLeftSubtree(parent.right);
+                    if(parentRightMost == toBeDeleted){ //Left son has non right son so it is the rightmost
+                       parent.right = toBeDeleted.left;
+                       toBeDeleted.left.right = toBeDeleted.right;
+                    }else{
+                        Node<T> rightMost = parentRightMost.right;
+                        parentRightMost.right = rightMost.left;
+                        parent.right = rightMost;
+                        rightMost.left = toBeDeleted.left;
+                        rightMost.right = toBeDeleted.right;
+                    }
+                }
+            }else{
+                if(parent.left.left == null){
+                    parent.left = parent.left.right;
+                }else if(parent.left.right == null){
+                    parent.left = parent.left.left;
+                }else{//Has both sons
+                    Node<T> toBeDeleted = parent.left;
+                    Node<T> parentRightMost = findPreviousRightMostOnLeftSubtree(parent.left);
+                    if(parentRightMost == toBeDeleted){ //Left son has non right son so it is the rightmost
+                       parent.left = toBeDeleted.left;
+                       toBeDeleted.left.right = toBeDeleted.right;
+                    }else{
+                        Node<T> rightMost = parentRightMost.right;
+                        parentRightMost.right = rightMost.left;
+                        parent.left = rightMost;
+                        rightMost.left = toBeDeleted.left;
+                        rightMost.right = toBeDeleted.right;
+                    }
+                }
+            }
+        }
+        return true;
+     }
+          
+     Node<T> findParentOfNodeToBeDeleted(T value){
+        Node<T> previous = null, curr = root;   
+        while((curr != null) && (!curr.value.equals(value))){
+            previous = curr;
+            if(value.compareTo(curr.value) > 0){
+                 curr = curr.right;
+            }else{
+                curr = curr.left;
+            }
+        }
+        if(curr != null) return previous; else return null;
+     }
+     
+     Node<T> findPreviousRightMostOnLeftSubtree(Node<T> curr){
+        //Move to left node
+        Node<T> previous = curr;
+        curr = curr.left;
+        // then try to mode to the right as most as possible
+        while(curr.right != null){ previous = curr;curr = curr.right;}
+        return previous; 
+     }
 }
