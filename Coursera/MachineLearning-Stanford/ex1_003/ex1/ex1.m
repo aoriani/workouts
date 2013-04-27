@@ -44,7 +44,10 @@ m = length(y); % number of training examples
 
 % Plot Data
 % Note: You have to complete the code in plotData.m
-plotData(X, y);
+%need this or the axises will 0..1
+plot(X, y,'rx','MarkerSize',10);
+ylabel('Profit in $10,000s');
+xlabel('Population of City in 10,000s');
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
@@ -56,8 +59,8 @@ X = [ones(m, 1), data(:,1)]; % Add a column of ones to x
 theta = zeros(2, 1); % initialize fitting parameters
 
 % Some gradient descent settings
-iterations = 1500;
-alpha = 0.01;
+iterations = 15000;
+alpha = 0.02;
 
 % compute and display initial cost
 computeCost(X, y, theta)
