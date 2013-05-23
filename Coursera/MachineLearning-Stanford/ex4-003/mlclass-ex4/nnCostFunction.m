@@ -86,19 +86,18 @@ a_3 = sigmoid(z_3);
 % Cost Function non-Regularized
 %=========================================================================
 cost = 0;
+yk=zeros(num_labels,m);
+h = a_3;
+
 for i=1:m
     %Y has the label (1,2,..10), but we need to each one of m labels generate a vector with only one 
-    % in the respective position of the label
-    yk=zeros(num_labels,1);
-    yk(y(i)) = 1;
-    h = a_3(:,i);
-    
-    % Now we compute a vectorized version of inner sumation
-    inner_parcels = (-yk .* log(h)) - (( 1 .-yk) .* log(1 .- h));
-    inner_sum = sum(inner_parcels);
-    cost += inner_sum;
+    % in the respective position of the label 
+    yk(y(i),i) = 1;
 end
-
+    
+% Now we compute a vectorized version of inner sumation
+inner_parcels = (-yk .* log(h)) - (( 1 .-yk) .* log(1 .- h));
+cost = sum(sum(inner_parcels));
 J = cost/m;
 
 
