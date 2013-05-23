@@ -97,8 +97,20 @@ end
     
 % Now we compute a vectorized version of inner sumation
 inner_parcels = (-yk .* log(h)) - (( 1 .-yk) .* log(1 .- h));
-cost = sum(sum(inner_parcels));
-J = cost/m;
+cost = sum(sum(inner_parcels))/m;
+
+%=========================================================================
+% Regularization
+%=========================================================================
+Theta1_nobias = Theta1;
+Theta1_nobias(:,1) = 0;
+
+Theta2_nobias = Theta2;
+Theta2_nobias(:,1) = 0;
+
+reg_factor = lambda/2/m * (sum(sum(Theta1_nobias .^ 2)) + sum(sum(Theta2_nobias .^ 2)));
+
+J = cost + reg_factor;
 
 
 
