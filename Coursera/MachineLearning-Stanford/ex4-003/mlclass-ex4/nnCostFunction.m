@@ -112,12 +112,20 @@ reg_factor = lambda/2/m * (sum(sum(Theta1_nobias .^ 2)) + sum(sum(Theta2_nobias 
 
 J = cost + reg_factor;
 
+%=========================================================================
+% Gradiant
+%=========================================================================
+Delta2 = zeros(num_labels, (hidden_layer_size + 1));
+Delta1 = zeros(hidden_layer_size, (input_layer_size + 1));
+for i=1:m
+    deltinha3 = a_3(:,i) - yk(:,i);
+    deltinha2 = (Theta2'* deltinha3)(2:end) .* sigmoidGradient(z_2(:,i));
+    Delta2 += deltinha3*(a_2(:,i))';
+    Delta1 += deltinha2*X(i,:);
+end
 
-
-
-
-
-
+Theta1_grad = Delta1/m;
+Theta2_grad = Delta2/m;
 
 
 
