@@ -124,8 +124,13 @@ for i=1:m
     Delta1 += deltinha2*X(i,:);
 end
 
-Theta1_grad = Delta1/m;
-Theta2_grad = Delta2/m;
+reg1 = lambda/m*Theta1;
+reg1(:,1) = 0;
+reg2 = lambda/m*Theta2;
+reg2(:,1) = 0;
+
+Theta1_grad = Delta1/m + reg1;
+Theta2_grad = Delta2/m + reg2;
 
 
 
